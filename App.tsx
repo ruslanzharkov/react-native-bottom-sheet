@@ -8,28 +8,34 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  StatusBar,
   TouchableOpacity,
   Text,
   View,
+  SafeAreaView,
 } from 'react-native';
 
 import {BottomSheet} from './src/bottomSheet';
 
 const App = () => {
+  const [isOpen, setOpen] = useState<boolean>(false);
+
   return (
     <>
       <View style={styles.flexContainer}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Open Bottom Sheet</Text>
-          </TouchableOpacity>
-        </View>
-        <BottomSheet />
+        <SafeAreaView>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setOpen(true)}
+            >
+              <Text style={styles.buttonText}>Open Bottom Sheet</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+        <BottomSheet isOpen={isOpen} openedPercentage={0.7} />
       </View>
     </>
   );
