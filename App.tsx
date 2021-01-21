@@ -8,7 +8,7 @@
  * @format
  */
 
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
@@ -21,21 +21,29 @@ import {BottomSheet} from './src/bottomSheet';
 
 const App = () => {
   const [isOpen, setOpen] = useState<boolean>(false);
+  const openDrawer = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    setOpen(false);
+  }, []);
 
   return (
     <>
       <View style={styles.flexContainer}>
         <SafeAreaView>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setOpen(true)}
-            >
+            <TouchableOpacity style={styles.button} onPress={openDrawer}>
               <Text style={styles.buttonText}>Open Bottom Sheet</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>
-        <BottomSheet isOpen={isOpen} openedPercentage={0.7} />
+        <BottomSheet isOpen={isOpen} openedPercentage={0.7}>
+          <TouchableOpacity style={styles.button} onPress={closeDrawer}>
+            <Text style={styles.buttonText}>Close Bottom Sheet</Text>
+          </TouchableOpacity>
+        </BottomSheet>
       </View>
     </>
   );

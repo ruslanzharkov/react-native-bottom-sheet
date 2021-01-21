@@ -1,30 +1,63 @@
-import React from 'react';
-import {View, StyleSheet, Animated} from 'react-native';
+import React, {ReactNode, useEffect, useState} from 'react';
+import {View, StyleSheet, Animated, Dimensions} from 'react-native';
 
 const openedPercent = 100;
 
 interface BottomSheetProps {
   isOpen: boolean;
-  onClose: () => void;
   openedPercentage: number;
+  children: React.FC | Element | ReactNode;
 }
 
-export const BottomSheet = ({isOpen, onClose, openedPercentage}: BottomSheetProps) => {
-  if (!isOpen) {
-    return null;
-  }
+export const BottomSheet = ({
+  isOpen,
+  openedPercentage,
+  children,
+}: BottomSheetProps) => {
+  const windowHeight = Dimensions.get('screen').height;
+  const pixelPercentHeight = windowHeight * openedPercentage;
+  const [animation] = useState(new Animated.Value(pixelPercentHeight * 2));
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const heightValue = openedPercentage * openedPercent;
+  const heightStyle = {height: `${heightValue}%`};
 
-  const heightStyle = {height: `${openedPercentage * openedPercent}%`};
-  const bottomSheetStyles = [styles.bottomSheet, heightStyle];
+  useEffect(() => {
+    if (isOpen) {
+      setDrawerOpen(true);
+      Animated.timing(animation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      setTimeout(() => setDrawerOpen(false), 300);
+      Animated.timing(animation, {
+        toValue: pixelPercentHeight * 2,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isOpen]);
 
   return (
-    <>
-      <View style={styles.bottomSheetContainer}>
-        <Animated.View style={styles.interactable}>
-          <View style={bottomSheetStyles} />
-        </Animated.View>
-      </View>
-    </>
+    isDrawerOpen && (
+      <>
+        <View style={styles.bottomSheetContainer}>
+          <View style={styles.interactable}>
+            <Animated.View
+              style={[
+                styles.bottomSheet,
+                heightStyle,
+                {
+                  transform: [{translateY: animation}],
+                },
+              ]}>
+              {children}
+            </Animated.View>
+          </View>
+        </View>
+      </>
+    )
   );
 };
 
