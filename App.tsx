@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 
 import {BottomSheet} from './src/bottomSheet';
+import {Button} from './src/components/button';
 
 const App = () => {
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -34,15 +35,16 @@ const App = () => {
       <View style={styles.flexContainer}>
         <SafeAreaView>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={openDrawer}>
-              <Text style={styles.buttonText}>Open Bottom Sheet</Text>
-            </TouchableOpacity>
+            <Button title="Open Bottom Sheet" onPress={openDrawer} />
           </View>
         </SafeAreaView>
-        <BottomSheet isOpen={isOpen} openedPercentage={0.7} onClose={closeDrawer}>
-          <TouchableOpacity style={styles.button} onPress={closeDrawer}>
-            <Text style={styles.buttonText}>Close Bottom Sheet</Text>
-          </TouchableOpacity>
+        <BottomSheet
+          isOpen={isOpen}
+          openedPercentage={0.7}
+          onClose={closeDrawer}>
+          <View style={styles.buttonContainer}>
+            <Button title="Close Bottom Sheet" onPress={closeDrawer} />
+          </View>
         </BottomSheet>
       </View>
     </>
