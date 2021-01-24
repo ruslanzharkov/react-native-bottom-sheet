@@ -1,5 +1,11 @@
 import React, {ReactNode, useEffect, useState} from 'react';
-import {View, StyleSheet, Animated, Dimensions} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Animated,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 const openedPercent = 100;
 
@@ -7,19 +13,24 @@ interface BottomSheetProps {
   isOpen: boolean;
   openedPercentage: number;
   children: React.FC | Element | ReactNode;
+  onClose: () => void;
 }
 
 export const BottomSheet = ({
   isOpen,
   openedPercentage,
   children,
+  onClose,
 }: BottomSheetProps) => {
   const windowHeight = Dimensions.get('screen').height;
   const pixelPercentHeight = windowHeight * openedPercentage;
-  const [animation] = useState(new Animated.Value(pixelPercentHeight * 2));
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
   const heightValue = openedPercentage * openedPercent;
   const heightStyle = {height: `${heightValue}%`};
+
+  const [animation] = useState<Animated.Value>(
+    new Animated.Value(pixelPercentHeight * 2),
+  );
+  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -37,40 +48,42 @@ export const BottomSheet = ({
         useNativeDriver: true,
       }).start();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  return (
-    isDrawerOpen && (
-      <>
-        <View style={styles.bottomSheetContainer}>
-          <View style={styles.interactable}>
-            <Animated.View
-              style={[
-                styles.bottomSheet,
-                heightStyle,
-                {
-                  transform: [{translateY: animation}],
-                },
-              ]}>
-              {children}
-            </Animated.View>
-          </View>
+  return isDrawerOpen ? (
+    <>
+      <View style={styles.bottomSheetContainer}>
+        <View style={styles.animationContainer}>
+          <Animated.View
+            style={[
+              styles.bottomSheet,
+              heightStyle,
+              {
+                transform: [{translateY: animation}],
+              },
+            ]}>
+            {children}
+          </Animated.View>
+          <TouchableWithoutFeedback onPress={onClose}>
+            <View style={styles.touchableTransparentContainer} />
+          </TouchableWithoutFeedback>
         </View>
-      </>
-    )
-  );
+      </View>
+    </>
+  ) : null;
 };
 
 const styles = StyleSheet.create({
   bottomSheetContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'grey',
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
     width: '100%',
     height: '100%',
     zIndex: 999,
     elevation: 999,
   },
-  interactable: {
+  animationContainer: {
     flex: 1,
     flexDirection: 'column-reverse',
     height: '100%',
@@ -79,5 +92,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     backgroundColor: '#fff',
+  },
+  touchableTransparentContainer: {
+    flex: 1,
   },
 });

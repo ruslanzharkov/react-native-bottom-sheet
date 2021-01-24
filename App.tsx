@@ -39,7 +39,7 @@ const App = () => {
             </TouchableOpacity>
           </View>
         </SafeAreaView>
-        <BottomSheet isOpen={isOpen} openedPercentage={0.7}>
+        <BottomSheet isOpen={isOpen} openedPercentage={0.7} onClose={closeDrawer}>
           <TouchableOpacity style={styles.button} onPress={closeDrawer}>
             <Text style={styles.buttonText}>Close Bottom Sheet</Text>
           </TouchableOpacity>
