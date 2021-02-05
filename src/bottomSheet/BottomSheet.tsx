@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 const openedPercent = 100;
+const durationMs = 350;
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -37,14 +38,14 @@ export const BottomSheet = ({
       setDrawerOpen(true);
       Animated.timing(animation, {
         toValue: 0,
-        duration: 300,
+        duration: durationMs,
         useNativeDriver: true,
       }).start();
     } else {
-      setTimeout(() => setDrawerOpen(false), 300);
+      setTimeout(() => setDrawerOpen(false), durationMs);
       Animated.timing(animation, {
         toValue: pixelPercentHeight * 2,
-        duration: 300,
+        duration: durationMs,
         useNativeDriver: true,
       }).start();
     }

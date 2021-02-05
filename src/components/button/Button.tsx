@@ -17,7 +17,7 @@ export const Button = ({title, onPress}: ButtonProps) => {
 const styles = StyleSheet.create({
   button: {
     width: 150,
-    backgroundColor: 'indigo',
+    backgroundColor: '#FAB67E',
     padding: 10,
     borderRadius: 10,
   },
