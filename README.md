@@ -4,7 +4,6 @@ App with example of Animated API usage.
 ## Demo
 ![](./gifs/demo.gif)
 
-
 ## Installation
 ``Make sure you have node > 9``
 1. `git clone https://github.com/ruslanzharkov/react-native-bottom-sheet.git`
