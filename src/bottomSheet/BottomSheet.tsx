@@ -5,6 +5,7 @@ import {
   Animated,
   Dimensions,
   TouchableWithoutFeedback,
+  PanResponder,
 } from 'react-native';
 
 const openedPercent = 100;
@@ -24,14 +25,53 @@ export const BottomSheet = ({
   onClose,
 }: BottomSheetProps) => {
   const windowHeight = Dimensions.get('screen').height;
-  const pixelPercentHeight = windowHeight * openedPercentage;
+  const bottomSheetHeight = Math.floor(windowHeight * openedPercentage);
   const heightValue = openedPercentage * openedPercent;
   const heightStyle = {height: `${heightValue}%`};
 
-  const [animation] = useState<Animated.Value>(
-    new Animated.Value(pixelPercentHeight * 2),
-  );
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [animation] = useState<Animated.Value>(
+    new Animated.Value(bottomSheetHeight * 2),
+  );
+
+  const [pan] = useState<Animated.ValueXY>(new Animated.ValueXY());
+  const [panResponder] = useState(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderGrant: () => {
+        pan.setOffset({
+          x: pan.x._value,
+          y: pan.y._value,
+        });
+      },
+      onPanResponderMove: (e, gestureState) => {
+        if (gestureState.dy >= 0) {
+          Animated.timing(animation, {
+            toValue: gestureState.dy,
+            useNativeDriver: true,
+            duration: 0,
+          }).start();
+        }
+
+        return Animated.event([null, {dx: pan.x, dy: pan.y}], {
+          useNativeDriver: true,
+        });
+      },
+      onPanResponderRelease: (e, gestureState) => {
+        pan.flattenOffset();
+        if (gestureState.dy < bottomSheetHeight / 2) {
+          Animated.timing(animation, {
+            toValue: 0,
+            duration: durationMs,
+            useNativeDriver: true,
+          }).start();
+        } else {
+          onClose();
+        }
+      },
+    }),
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -42,9 +82,11 @@ export const BottomSheet = ({
         useNativeDriver: true,
       }).start();
     } else {
-      setTimeout(() => setDrawerOpen(false), durationMs);
+      requestAnimationFrame(() => {
+        setTimeout(() => setDrawerOpen(false), durationMs);
+      });
       Animated.timing(animation, {
-        toValue: pixelPercentHeight * 2,
+        toValue: bottomSheetHeight * 2,
         duration: durationMs,
         useNativeDriver: true,
       }).start();
@@ -63,7 +105,8 @@ export const BottomSheet = ({
               {
                 transform: [{translateY: animation}],
               },
-            ]}>
+            ]}
+            {...panResponder.panHandlers}>
             {children}
           </Animated.View>
           <TouchableWithoutFeedback onPress={onClose}>
