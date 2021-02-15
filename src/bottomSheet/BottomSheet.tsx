@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, {ReactNode, useEffect, useMemo, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -34,6 +34,17 @@ export const BottomSheet = ({
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [animation] = useState<Animated.Value>(
     new Animated.Value(bottomSheetHeight * 2),
+  );
+
+  const bottomSheetStyles = useMemo(
+    () => [
+      styles.bottomSheet,
+      heightStyle,
+      {
+        transform: [{translateY: animation}],
+      },
+    ],
+    [heightStyle, animation],
   );
 
   const [pan] = useState<Animated.ValueXY>(new Animated.ValueXY());
@@ -101,13 +112,7 @@ export const BottomSheet = ({
       <View style={styles.bottomSheetContainer}>
         <View style={styles.animationContainer}>
           <Animated.View
-            style={[
-              styles.bottomSheet,
-              heightStyle,
-              {
-                transform: [{translateY: animation}],
-              },
-            ]}
+            style={bottomSheetStyles}
             {...panResponder.panHandlers}>
             {children}
           </Animated.View>
@@ -123,7 +128,7 @@ export const BottomSheet = ({
 const styles = StyleSheet.create({
   bottomSheetContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     width: '100%',
     height: '100%',
     zIndex: 999,
