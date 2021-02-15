@@ -7,12 +7,11 @@ import {
   TouchableWithoutFeedback,
   PanResponder,
 } from 'react-native';
-
-const openedPercent = 100;
-const durationMs = 350;
-const nativeDriverConfig = {
-  useNativeDriver: true,
-};
+import {
+  durationMs,
+  nativeDriverConfig,
+  openedPercent,
+} from '../constants/bottomSheet';
 
 interface BottomSheetProps {
   isOpen: boolean;
