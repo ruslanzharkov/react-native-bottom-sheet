@@ -10,6 +10,9 @@ import {
 
 const openedPercent = 100;
 const durationMs = 350;
+const nativeDriverConfig = {
+  useNativeDriver: true,
+};
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -49,13 +52,13 @@ export const BottomSheet = ({
         if (gestureState.dy >= 0) {
           Animated.timing(animation, {
             toValue: gestureState.dy,
-            useNativeDriver: true,
             duration: 0,
+            ...nativeDriverConfig,
           }).start();
         }
 
         return Animated.event([null, {dx: pan.x, dy: pan.y}], {
-          useNativeDriver: true,
+          ...nativeDriverConfig,
         });
       },
       onPanResponderRelease: (e, gestureState) => {
@@ -64,7 +67,7 @@ export const BottomSheet = ({
           Animated.timing(animation, {
             toValue: 0,
             duration: durationMs,
-            useNativeDriver: true,
+            ...nativeDriverConfig,
           }).start();
         } else {
           onClose();
@@ -79,7 +82,7 @@ export const BottomSheet = ({
       Animated.timing(animation, {
         toValue: 0,
         duration: durationMs,
-        useNativeDriver: true,
+        ...nativeDriverConfig,
       }).start();
     } else {
       requestAnimationFrame(() => {
@@ -88,7 +91,7 @@ export const BottomSheet = ({
       Animated.timing(animation, {
         toValue: bottomSheetHeight * 2,
         duration: durationMs,
-        useNativeDriver: true,
+        ...nativeDriverConfig,
       }).start();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
